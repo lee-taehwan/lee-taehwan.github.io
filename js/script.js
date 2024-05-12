@@ -7,111 +7,6 @@
     });
   }
 
-  // charts
-  var chart1 = document.getElementById('chart1');
-  var chart2 = document.getElementById('chart2');
-  var chart3 = document.getElementById('chart3');
-  var chart4 = document.getElementById('chart4');
-  var options = {
-    maintainAspectRatio: false,
-    tooltips: {
-      backgroundColor: '#040404',
-      bodyFontColor: '#fff',
-      xPadding: 15,
-      yPadding: 15,
-      displayColors: false,
-      caretPadding: 10,
-    },
-    legend: {
-      display: false
-    },
-    cutoutPercentage: 60
-  }
-  var borderColor = 'transparent';
-  var backgroundColor = ['#9a8ce3', '#3ac3c9', '#ffce03', '#ffa71c'];
-  var hoverBackgroundColor = ['grey', 'grey', 'grey', 'grey'];
-  var hoverBorderColor = 'rgba(234, 236, 244, 1)';
-
-  if (chart1) {
-    new Chart(chart1, {
-      type: 'doughnut',
-      options,
-      data: {
-        labels: ['JavaScript ES6', 'React', 'HTML5', 'CSS3'],
-        datasets: [{
-          data: [50, 40, 7, 3],
-          borderColor,
-          backgroundColor,
-          hoverBackgroundColor,
-          hoverBorderColor
-        }]
-      }
-    });
-  }
-
-  if (chart2) {
-    new Chart(chart2, {
-      type: 'doughnut',
-      options,
-      data: {
-        labels: ['Node.js', 'Express', 'Koa', 'Java', 'Spring'],
-        datasets: [{
-          data: [30, 20, 10, 20, 20],
-          borderColor,
-          backgroundColor,
-          hoverBackgroundColor,
-          hoverBorderColor
-        }]
-      }
-    });
-  }
-
-  if (chart3) {
-    new Chart(chart3, {
-      type: 'doughnut',
-      options,
-      data: {
-        labels: ['MongoDB', 'MySQL', 'PostgreSQL'],
-        datasets: [{
-          data: [40, 34, 27],
-          borderColor,
-          backgroundColor,
-          hoverBackgroundColor,
-          hoverBorderColor
-        }]
-      }
-    });
-  }
-
-  if (chart4) {
-    new Chart(chart4, {
-      type: 'doughnut',
-      options,
-      data: {
-        labels: ['GitHub', 'Asana', 'Trello', 'Redmine', 'Adobe Xd'],
-        datasets: [{
-          data: [40, 15, 15, 20, 10],
-          borderColor,
-          backgroundColor,
-          hoverBackgroundColor,
-          hoverBorderColor
-        }]
-      }
-    });
-  }
-
-  // carousel
-  if ($('.owl-carousel').length > 0) {
-    $('.owl-carousel').owlCarousel({
-      animateIn: 'fadeIn',
-      animateOut: 'fadeOut',
-      items: 1,
-      autoplay: false,
-      dots: true,
-      loop: true
-    });
-  }
-
   // dark mode
   if ($('.btn-toggle').length > 0) {
     function switchMode(status) {
@@ -160,4 +55,36 @@ function glitch(element) {
       element.style.setProperty('--scale', `${bigScale}`)
     }
   }, 100)
+}
+
+// 아래 코드를 버튼 클릭시 실행되도록 바꿔줘
+function savePDF() {
+  html2canvas(document.querySelector("#capture")).then(canvas => {
+    // base64 url 로 변환
+    var imgData = canvas.toDataURL('image/jpeg');
+
+    var imgWidth = 210; // 이미지 가로 길이(mm) A4 기준
+    var pageHeight = imgWidth * 1.414; // 출력 페이지 세로 길이 계산 A4 기준
+    var imgHeight = canvas.height * imgWidth / canvas.width;
+    var heightLeft = imgHeight;
+    var margin = 0;
+
+    var doc = new jsPDF('p', 'mm', 'a4');
+    var position = 0;
+
+    // 첫 페이지 출력
+    doc.addImage(imgData, 'jpeg', margin, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    // 한 페이지 이상일 경우 루프 돌면서 출력
+    while (heightLeft >= 20) {
+      position = heightLeft - imgHeight;
+      doc.addPage();
+      doc.addImage(imgData, 'jpeg', margin, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    // 파일 저장
+    doc.save('sample.pdf');
+  });
 }
