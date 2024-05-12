@@ -57,19 +57,18 @@ function glitch(element) {
   }, 100)
 }
 
-// 아래 코드를 버튼 클릭시 실행되도록 바꿔줘
 function savePDF() {
   html2canvas(document.querySelector("#capture")).then(canvas => {
     // base64 url 로 변환
     var imgData = canvas.toDataURL('image/jpeg');
 
-    var imgWidth = 210; // 이미지 가로 길이(mm) A4 기준
-    var pageHeight = imgWidth * 1.414; // 출력 페이지 세로 길이 계산 A4 기준
+    var imgWidth = 297; // 이미지 가로 길이(mm) A4 기준
+    var pageHeight = 210; // 출력 페이지 세로 길이 계산 A4 기준
     var imgHeight = canvas.height * imgWidth / canvas.width;
     var heightLeft = imgHeight;
     var margin = 0;
 
-    var doc = new jsPDF('p', 'mm', 'a4');
+    var doc = new jsPDF('l', 'mm', 'a4');
     var position = 0;
 
     // 첫 페이지 출력
