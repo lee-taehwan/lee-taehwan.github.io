@@ -84,6 +84,6 @@ function savePDF() {
     }
 
     // 파일 저장
-    doc.save('sample.pdf');
+    doc.save('portfolio.pdf');
   });
 }
